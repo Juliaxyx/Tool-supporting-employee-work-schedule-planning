@@ -15,5 +15,5 @@ connection.execute(query)
 connection.close()
 
 #Zmiany: 
-#0-rano
-#1-popołudniu
+#1-rano
+#2-popołudniu

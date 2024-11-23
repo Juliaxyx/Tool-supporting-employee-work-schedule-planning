@@ -4,7 +4,7 @@ import controllers.form_controller as controller
 import logic.logic_form as logic   
 
 def main_form():
-    headings = keys.keys()
+    headings = list(keys.keys())
 
     layout = [
         [sg.Text('Miesiąc:', size=(6,1), justification='left'), sg.Combo(months,enable_events=True, key='-MONTH-', size=(15, 1), readonly = True, background_color= '#e3af6f'),sg.Text(' '*30), sg.Button('Pobierz dane', key='-INSERT-', disabled=True, tooltip='Tylko koordynator może pobierać dyspozycyjność pracownika w danym miesiącu')],

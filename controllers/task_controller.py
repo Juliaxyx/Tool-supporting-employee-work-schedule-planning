@@ -18,7 +18,6 @@ def delete_info(name, date_done):
     cursor = connection.cursor()
     cursor.execute("DELETE from TASKS WHERE name = ? AND date_done = ?", (name, date_done))
     connection.commit()
-    print(connection.total_changes)
     connection.close()
 
 #Pozyskiwanie wartości z bazy danych 

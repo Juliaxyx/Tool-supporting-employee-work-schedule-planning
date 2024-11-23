@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 import controllers.task_controller as controller
 import logic.logic_tasks as logic    
+from consts import employees
 def main_tasks():
     tasks_for_table_array = logic.get_table_data_with_additional_column()
 
@@ -10,7 +11,7 @@ def main_tasks():
     layout = [
         [sg.Text("Wpisz nazwę zadania:", size=(22,1)), sg.Input(key='-NAME-', size=(30, 1), disabled_readonly_background_color='grey')],
         [sg.Text("Wpisz opis zadania:", size=(22,1)), sg.Input(key='-DESCRIPTION-', size=(40, 1))],
-        [sg.Text("Wybierz pracownika:", size=(22,1)), sg.Combo(['Julia', 'Anna', 'Alicja', 'Magda', 'Marta', 'Monika'], key='-EMPLOYEE-', size=(10, 1), readonly = True)],
+        [sg.Text("Wybierz pracownika:", size=(22,1)), sg.Combo(employees, key='-EMPLOYEE-', size=(10, 1), readonly = True)],
         [sg.Text("Wybierz piorytet:", size=(22,1)), sg.Combo(['niski', 'średni', 'wysoki'], key='-PRIORITY-', size=(10, 1), readonly = True)],
         [
             sg.Text("Wybierz datę wykonania:", size=(22,1)), 
@@ -65,8 +66,8 @@ def main_tasks():
                     date_valid = logic.is_date_valid(date_string)
                     if type(date_valid) == bool:
                         window['-DATE_DONE-'].update(value=date_string)
-                        sg.theme('DarkBlue3')
                         break
+            sg.theme('DarkBlue3')
     #Dodaj zadanie
         elif event == 'Dodaj zadanie':
             sg.theme('LightGrey1')
@@ -79,6 +80,7 @@ def main_tasks():
                 window['-TABLE-'].update(values = tasks_for_table_array) 
                 sg.popup(("Informacje zapisane!"), title = "Informacja")
                 logic.clean_input_fields(keys, window)
+            sg.theme('DarkBlue3')
     #Edycja zadania
         if event == 'Edytuj zadanie' or event == 'Zapisz zmiany':
             sg.theme('LightGrey1')
@@ -118,6 +120,7 @@ def main_tasks():
                 window['-DATE_DONE-'].widget['readonlybackground'] = 'white'
                 
                 logic.clean_input_fields(keys, window)
+            sg.theme('DarkBlue3')
     #Usuwanie zadania
         if event == 'Usuń zadanie':
             if values['-TABLE-']==[]:

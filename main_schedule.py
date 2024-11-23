@@ -1,25 +1,20 @@
 import PySimpleGUI as sg
 import controllers.schedule_controller as controller
+from consts import keys, shift_names, months, employees
 
 #tasks_for_table_array = logic.get_table_data_with_additional_column()
 def main_schedule():
-    keys = {1 : '-1-', 2 : '-2-', 3 : '-3-', 4: '-4-', 5 : '-5-', 6 : '-6-', 7 : '-7-', 8 : '-8-', 9 : '-9-', 10 : '-10-',
-            11 : '-11-', 12 : '-12-', 13 : '-13-', 14 : '-14-', 15 : '-15-', 16 : '-16-', 17 : '-17-', 18 : '-18-',
-            19 : '-19-', 20 : '-20-', 21 : '-21-', 22 : '-22-', 23 : '-23-', 24 :'-24-', 25 : '-25-', 26 : '-26-',
-            27 : '-27-', 28 : '-28-', 29 : '-29-', 30 : '-30-', 31 : '-31-'}
 
-    months = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień']
-    employees = ['Julia', 'Anna', 'Alicja', 'Magda', 'Marta', 'Monika']
-    shift_names = {0: 'rano', 1: 'popołudniu'}
+    shift_list = shift_names[1:3]
     
     def show_days(row):
         days = []
         for day in keys.keys():
             frame_layout = [
                 [sg.Text('Dzień ' + str(day), size=(20,1), justification='center')], 
-                [sg.Text(shift_names[0], size=(10,1), justification='left'), sg.Push(), sg.Combo([], key=keys[day]+shift_names[0]+'main', size=(5,1))],
-                [sg.Push(), sg.Combo([], key=keys[day]+shift_names[0]+'support', size=(5,1))], 
-                [sg.Text(shift_names[1], size=(10,1), justification='left'), sg.Push(), sg.Combo([], key=keys[day]+shift_names[1]+'main', size=(5,1))]
+                [sg.Text(shift_list[0], size=(10,1), justification='left'), sg.Push(), sg.Combo([], key=keys[day]+shift_list[0]+'main', size=(5,1))],
+                [sg.Push(), sg.Combo([], key=keys[day]+shift_list[0]+'support', size=(5,1))], 
+                [sg.Text(shift_list[1], size=(10,1), justification='left'), sg.Push(), sg.Combo([], key=keys[day]+shift_list[1]+'main', size=(5,1))]
             ]
             days.append(sg.Frame('',layout=frame_layout, key=keys[day]))
         if row == 1:
@@ -55,4 +50,4 @@ def main_schedule():
         main()
     except:
         from main import main
-main_schedule()
+# main_schedule()

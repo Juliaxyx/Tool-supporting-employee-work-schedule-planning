@@ -1,22 +1,14 @@
 import PySimpleGUI as sg
+from consts import keys, months, shift_names, employees
 import controllers.form_controller as controller
 import logic.logic_form as logic   
 
 def main_form():
-    headings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 
-                27, 28, 29, 30, 31]
-
-    keys = {1 : '-1-', 2 : '-2-', 3 : '-3-', 4: '-4-', 5 : '-5-', 6 : '-6-', 7 : '-7-', 8 : '-8-', 9 : '-9-', 10 : '-10-',
-            11 : '-11-', 12 : '-12-', 13 : '-13-', 14 : '-14-', 15 : '-15-', 16 : '-16-', 17 : '-17-', 18 : '-18-',
-            19 : '-19-', 20 : '-20-', 21 : '-21-', 22 : '-22-', 23 : '-23-', 24 :'-24-', 25 : '-25-', 26 : '-26-',
-            27 : '-27-', 28 : '-28-', 29 : '-29-', 30 : '-30-', 31 : '-31-'}
-
-    months = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień']
-    shift_names = ['brak', 'rano', 'popołudniu', 'cały dzień']
+    headings = keys.keys()
 
     layout = [
         [sg.Text('Miesiąc:', size=(6,1), justification='left'), sg.Combo(months,enable_events=True, key='-MONTH-', size=(15, 1), readonly = True, background_color= '#e3af6f'),sg.Text(' '*30), sg.Button('Pobierz dane', key='-INSERT-', disabled=True, tooltip='Tylko koordynator może pobierać dyspozycyjność pracownika w danym miesiącu')],
-        [sg.Text('Dyspozycyjność pracownika:', size=(22,1), justification='left'), sg.Combo(['Julia', 'Anna', 'Alicja', 'Magda', 'Marta', 'Monika'], key='-EMPLOYEE-', size=(15, 1), readonly = True, background_color= '#e3af6f')],
+        [sg.Text('Dyspozycyjność pracownika:', size=(22,1), justification='left'), sg.Combo(employees, key='-EMPLOYEE-', size=(15, 1), readonly = True, background_color= '#e3af6f')],
         [sg.Text('------------------------------------------------------------------------------------------------------------------------------------------------------------', justification='center')],
         [sg.Text('Dzień miesiąca:', size=(18,1), justification='centre'), sg.Text("Wybierz dostępność:", size=(15,1), justification='left'), sg.Text('Dzień miesiąca:', size=(18,1), justification='centre'), sg.Text("Wybierz dostępność:", size=(15,1), justification='left')],
         [sg.Text(headings[0], size=(22,1), justification='centre'), sg.Combo(shift_names, key=(keys[1]), size=(10, 1), readonly = True),  sg.Text(headings[16], size=(22,1), justification='centre'), sg.Combo(shift_names, key=(keys[17]), size=(10, 1), readonly = True)],

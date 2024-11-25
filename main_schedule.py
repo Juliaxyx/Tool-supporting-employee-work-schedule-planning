@@ -11,8 +11,8 @@ def main_schedule():
         days = []
         for day in keys.keys():
             frame_layout = [
-                [sg.Text('Dzień ' + str(day), size=(22,1), font=('',10,"bold"), justification='center')], 
-                [sg.Text(shift_list[0].capitalize(), size=(10,1), justification='center'), sg.Text(shift_list[1].capitalize(), size=(10,1), justification='center')],
+                [sg.Text('Dzień ' + str(day), size=(22,1), font=('',10,"bold"), justification='center', background_color= '#e3af6f',text_color='#000000')], 
+                [sg.Text(shift_list[0].capitalize(), size=(10,1), justification='center'), sg.Text(shift_list[1].capitalize(), size=(12,1), justification='center')],
                 [sg.Combo([], readonly=True, key=keys[day]+shift_list[0]+'-main', disabled=True, size=(10,1), enable_events=True), sg.Push(),sg.Combo([], readonly=True, disabled=True, key=keys[day]+shift_list[1]+'-main', size=(10,1), enable_events=True)],
                 [sg.Combo([], readonly=True, key=keys[day]+shift_list[0]+'-support', disabled=True, size=(10,1), enable_events=True), sg.Push(), sg.Combo([], readonly=True, key=keys[day]+shift_list[1]+'-support', disabled=True, size=(10,1), enable_events=True)]
             ]
@@ -53,6 +53,7 @@ def main_schedule():
     is_coordinator = 0
     while True:
         if set_default == 0:
+            sg.theme('LightGrey1')
             if logic.check_permissions([window_form['Zapisz zmiany'], window_form['Edytuj zmiany']]):
                 is_coordinator = 1
                 for key in keys.values():
@@ -75,6 +76,7 @@ def main_schedule():
                 window_form[key+shift_list[1]+'-main'].update(value=[], values=[], size=(10,1))
                 window_form[key+shift_list[1]+'-support'].update(value=[], values=[], disabled=True, size=(10,1))
             if len(form_data) < 1:
+                sg.theme('LightGrey1')
                 sg.popup('Brak wystawionej dyspozycyjności w tym miesiącu!')
             for employee in employees:
                 window_form[employee+'-MIN_H'].update(value='0')
@@ -163,6 +165,7 @@ def main_schedule():
                 employees_chosen[key+shift_list[1]+'-support'] = values[key+shift_list[1]+'-support'] 
         if event == 'Zapisz zmiany':
             if len(current_schedule_data) > 0:
+                sg.theme('LightGrey1')
                 sg.popup('Grafik na ten miesiąc już był ustalany!')
             days = []
             for key in keys.values():
@@ -176,10 +179,10 @@ def main_schedule():
                     values[key+shift_list[1]+'-main'], values[key+shift_list[1]+'-support']])
             controller.update_info(days, months.index(values['-MONTH-']))
         if event in (sg.WIN_CLOSED, 'Wyjście'):
+            sg.theme('DarkBlue3')
             break
     window_form.close()
     try:
         main()
     except:
         from main import main
-# main_schedule()

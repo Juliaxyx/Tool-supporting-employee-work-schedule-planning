@@ -144,5 +144,4 @@ def main_tasks():
         main()
     except:
         from main import main
-# main_tasks()
         

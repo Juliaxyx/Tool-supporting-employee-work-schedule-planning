@@ -5,10 +5,8 @@ import sqlite3
 path = os.path.dirname(os.path.abspath(__file__))
 db = os.path.join(path, '../databases/resources.db')
 
-#FORM
 def insert_info(employee, month, shifts, min_h, max_h):
     connection = sqlite3.connect(db)
-    print(employee, month, shifts, min_h, max_h)
     for index, shift in enumerate(shifts):
         date = str(index+1) + '/' + str(month+1) + '/' + str(datetime.datetime.now().year)
         connection.execute("INSERT INTO RESOURCES (EMPLOYEE, DATE, SHIFT, MIN_H, MAX_H) \
@@ -18,7 +16,6 @@ def insert_info(employee, month, shifts, min_h, max_h):
     
 def update_info(employee, month, shifts, min_h, max_h):
     connection = sqlite3.connect(db)
-    print(employee, month, shifts, min_h, max_h)
     for index, shift in enumerate(shifts):
         date = str(index+1) + '/' + str(month+1) + '/' + str(datetime.datetime.now().year)
         connection.execute("UPDATE RESOURCES SET SHIFT = ?, MIN_H = ?, MAX_H = ? WHERE EMPLOYEE = ? AND DATE = ?", 

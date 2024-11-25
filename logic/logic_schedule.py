@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 
 
 def check_permissions(window_elements):
-    pass_popup = sg.Window('Podaj haslo koordynatora: ', [[sg.Input(key='-PASSWORD-')],[sg.Yes(button_text='Dalej')]], disable_close=True)
+    pass_popup = sg.Window('Podaj hasło lub kliknij "Dalej".', [[sg.Input(key='-PASSWORD-')],[sg.Yes(button_text='Dalej')]], disable_close=True)
     _, pass_val = pass_popup.read(close=True)
     if pass_val['-PASSWORD-'] == '123':
         window_elements[0].update(disabled=False)

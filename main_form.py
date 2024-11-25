@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from consts import keys, months, shift_names, employees
+from consts import keys, months, shift_names, employees, shorter_months 
 import controllers.form_controller as controller
 import logic.logic_form as logic   
 
@@ -38,8 +38,9 @@ def main_form():
     is_coordinator = False
     set_default = 0
     while True:
-        # Wstawianie 'brak' do kazdego z pol za pierwszym uruchomieniem, wyswietlenie okna do sprawdzenia permisji
+    #Wstawianie 'brak' do kazdego z pol za pierwszym uruchomieniem, wyswietlenie okna do sprawdzenia permisji
         if set_default == 0:
+            sg.theme('LightGrey1')
             logic.check_permissions([window_form['-EDIT-'], window_form['-INSERT-']])
             for key in keys.values():
                 window_form[key].update(value='brak')
@@ -48,6 +49,7 @@ def main_form():
         
     #Zapisywanie wartości 
         if event == 'Zapisz zmiany':
+            sg.theme('LightGrey1')
             valid_fields = logic.are_values_valid(values, months)
             if valid_fields:
                 shifts = []
@@ -62,6 +64,7 @@ def main_form():
             
     #Edytowanie istniejacej dyspozycyjnosci danych
         if event == '-EDIT-':
+            sg.theme('LightGrey1')
             valid_fields = logic.are_values_valid(values, months, [0,0])
             if type(valid_fields) == list:
                 shifts = []
@@ -72,8 +75,9 @@ def main_form():
                 controller.update_info(values['-EMPLOYEE-'], months.index(values['-MONTH-']), shifts, values['-MIN_H-'], values['-MAX_H-'])
                 sg.popup('Pomyślnie edytowano!')
 
-    #Wrzucenie danych z bazy dla danego pracownika i miesiaca
+    #Wyświetlenie danych z bazy dla danego pracownika i miesiaca
         if event == '-INSERT-':
+            sg.theme('LightGrey1')
             valid_fields = logic.are_values_valid(values, months, [0])
             if type(valid_fields) == list:
                 retrieved_data = controller.retrieve_info(values['-EMPLOYEE-'], months.index(values['-MONTH-']))
@@ -84,9 +88,8 @@ def main_form():
                     window_form['-MIN_H-'].update(value=row[3])
                     window_form['-MAX_H-'].update(value=row[4])
                     
-    #Zmiana okien w zależności od miesiąca        
+    #Zmiana miesiąca        
         if event == '-MONTH-':
-            shorter_months = [1,3,5,8,10]
             window_form[keys[31]].update(disabled=False)
             window_form[keys[30]].update(disabled=False)
             window_form[keys[31]].update(value='brak')
@@ -98,13 +101,14 @@ def main_form():
                     if index == 1:
                         window_form[keys[30]].update(disabled=True)
                         window_form[keys[30]].update(value='')
+                        
     #Wyjście    
         if event in (sg.WIN_CLOSED, 'Wyjście'):
+            sg.theme('DarkBlue3')
             break
     window_form.close()
     try:
         main()
     except:
         from main import main
-# main_form()
         

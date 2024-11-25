@@ -5,9 +5,7 @@ import sqlite3
 path = os.path.dirname(os.path.abspath(__file__))
 db = os.path.join(path, '../databases/resources.db')
 
-#    
-#    
-#     
+       
 def insert_info(days, month):
     connection = sqlite3.connect(db)
     for index, day in enumerate(days):
@@ -19,9 +17,7 @@ def insert_info(days, month):
         connection.commit()
     connection.close()  
    
-#    
-#    
-#     
+       
 def update_info(days, month):
     connection = sqlite3.connect(db)
     for index, day in enumerate(days):
@@ -44,6 +40,7 @@ def retrieve_info_form(month):
             results[record[0]] = {'days': {record[1][0:record[1].find('/')]: record[2]}, 'min': record[3], 'max': record[4]}
     connection.close()  
     return results
+
 
 def retrieve_info_schedule(month):
     results = []

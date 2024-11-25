@@ -1,4 +1,5 @@
 months = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień']
+shorter_months = [1,3,5,8,10]
 employees = ['Julia', 'Anna', 'Alicja', 'Magda', 'Marta', 'Monika']
 keys = {1 : '-1-', 2 : '-2-', 3 : '-3-', 4: '-4-', 5 : '-5-', 6 : '-6-', 7 : '-7-', 8 : '-8-', 9 : '-9-', 10 : '-10-',
         11 : '-11-', 12 : '-12-', 13 : '-13-', 14 : '-14-', 15 : '-15-', 16 : '-16-', 17 : '-17-', 18 : '-18-',

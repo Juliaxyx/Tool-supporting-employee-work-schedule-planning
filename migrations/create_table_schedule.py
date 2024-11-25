@@ -6,7 +6,7 @@ db = os.path.join(path, '../databases/resources.db')
 
 connection = sqlite3.connect(db)
 query = (''' CREATE TABLE SCHEDULE 
-            (MAIN_EMPLOYEE           TEXT    NOT NULL,
+            (MAIN_EMPLOYEE           TEXT,
             SUPPORT_EMPLOYEE           TEXT,
             DATE                TEXT    NOT NULL, 
             SHIFT               INTEGER NOT NULL

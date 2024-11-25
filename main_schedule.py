@@ -155,9 +155,14 @@ def main_schedule():
                 except:
                     print(combo_new_values)
                 window_form[event[0:event.find('main')]+'support'].update(values=combo_new_values, disabled=False, size=(10,len(combo_new_values)))
-                if values[event] == employees_chosen[event[0:event.find('main')]+'support']:
-                    employee_hours[str(values[event])] -= 5
-                    window_form[values[event]+'-CURRENT_H'].update(value=employee_hours[values[event]])   
+ # tu coś się psuje
+                try:   
+                    if values[event] == employees_chosen[event[0:event.find('main')]+'support']:
+                        employee_hours[str(values[event])] -= 5
+                        window_form[values[event]+'-CURRENT_H'].update(value=employee_hours[values[event]])   
+                except:
+                    print()
+          
             try:
                 employee_hours[str(values[event])] += 5
                 window_form[values[event]+'-CURRENT_H'].update(value=employee_hours[values[event]])   

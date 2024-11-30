@@ -138,6 +138,7 @@ def main_tasks():
                     window['-TABLE-']
     #Wyjście    
         if event in (sg.WIN_CLOSED, 'Wyjście'):
+            sg.theme('DarkBlue3')
             break
     window.close()
     try:

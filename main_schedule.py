@@ -73,10 +73,6 @@ def main_schedule():
         if event == '-MONTH-':
             current_schedule_data = controller.retrieve_info_schedule(months.index(values['-MONTH-']))
             form_data = controller.retrieve_info_form(months.index(values['-MONTH-']))
-            if len(form_data) < 1:
-                sg.theme('LightGrey1')
-                sg.popup('Brak wystawionej dyspozycyjności w tym miesiącu!')
-                continue
             employee_hours = {employee: 0 for employee in employees}
             employees_chosen = {}
             employees_all_shifts = {key+shift+string: [] for string in ['-main', '-support'] for shift in shift_list for key in keys.values()} 
@@ -92,6 +88,8 @@ def main_schedule():
                 window_form[employee+'-MIN_H'].update(value='0')
                 window_form[employee+'-MAX_H'].update(value='0')
                 window_form[employee+'-CURRENT_H'].update(value='0')
+                if len(form_data) < 1:
+                    continue
                 employee_data = form_data.get(employee)
                 if employee_data != None:
                     window_form[employee+'-MIN_H'].update(value=employee_data['min'])
@@ -99,23 +97,27 @@ def main_schedule():
                     for day, shift in employee_data['days'].items():
                         main_morning = list(window_form[keys[int(day)]+shift_list[0]+'-main'].widget['values'])
                         support_morning = list(window_form[keys[int(day)]+shift_list[0]+'-support'].widget['values'])
-                        main_evening = list(window_form[keys[int(day)]+shift_list[0]+'-main'].widget['values'])
-                        support_evening = list(window_form[keys[int(day)]+shift_list[0]+'-support'].widget['values'])
-                        main_morning.append(employee)
-                        support_morning.append(employee)
-                        main_evening.append(employee)
-                        support_evening.append(employee)
+                        main_evening = list(window_form[keys[int(day)]+shift_list[1]+'-main'].widget['values'])
+                        support_evening = list(window_form[keys[int(day)]+shift_list[1]+'-support'].widget['values'])
                         if shift == 1:
+                            main_morning.append(employee)
+                            support_morning.append(employee)
                             window_form[keys[int(day)]+shift_list[0]+'-main'].update(values = main_morning, size=(10,len(main_morning)))
                             window_form[keys[int(day)]+shift_list[0]+'-support'].update(values = support_morning, size=(10,len(support_morning)))
                             employees_all_shifts[keys[int(day)]+shift_list[0]+'-main'].append(employee)
                             employees_all_shifts[keys[int(day)]+shift_list[0]+'-support'].append(employee)
                         elif shift == 2:
+                            main_evening.append(employee)
+                            support_evening.append(employee)
                             window_form[keys[int(day)]+shift_list[1]+'-main'].update(values = main_evening, size=(10,len(main_evening)))
                             window_form[keys[int(day)]+shift_list[1]+'-support'].update(values = support_evening, size=(10,len(support_evening)))
                             employees_all_shifts[keys[int(day)]+shift_list[1]+'-main'].append(employee)
                             employees_all_shifts[keys[int(day)]+shift_list[1]+'-support'].append(employee)
                         elif  shift == 3:
+                            main_morning.append(employee)
+                            support_morning.append(employee)
+                            main_evening.append(employee)
+                            support_evening.append(employee)
                             window_form[keys[int(day)]+shift_list[0]+'-main'].update(values = main_morning, size=(10,len(main_morning)))
                             window_form[keys[int(day)]+shift_list[0]+'-support'].update(values = support_morning, size=(10,len(support_morning)))
                             window_form[keys[int(day)]+shift_list[1]+'-main'].update(values = main_evening, size=(10,len(main_evening)))
@@ -126,19 +128,25 @@ def main_schedule():
                             employees_all_shifts[keys[int(day)]+shift_list[1]+'-support'].append(employee)
                         else:
                             continue
-            if len(current_schedule_data) > 0:          
+                print(employees_all_shifts)
+            if len(form_data) < 1:
+                sg.theme('LightGrey1')
+                sg.popup('Brak wystawionej dyspozycyjności w tym miesiącu!')
+                continue
+            if len(current_schedule_data) > 0:    
+                print(current_schedule_data)
                 for shift_row in current_schedule_data:
                     if shift_row[0] != '':
                         employee_hours[shift_row[0]] += 5
                         employees_chosen[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-main'] = shift_row[0]
                         window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-main'].update(value=shift_row[0], size=(10,1))
                         window_form[shift_row[0]+'-CURRENT_H'].update(value=employee_hours[shift_row[0]])  
+                        combo_new_values = employees_all_shifts[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].copy()
                         if shift_row[1] != '':
                             employee_hours[shift_row[1]] += 5
                             employees_chosen[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'] = shift_row[1]
                             window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].update(value=shift_row[1], size=(10,len(combo_new_values)))                              
                             window_form[shift_row[1]+'-CURRENT_H'].update(value=employee_hours[shift_row[1]])
-                        combo_new_values = employees_all_shifts[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].copy()
                         try:
                             combo_new_values.remove(shift_row[0])
                         except:
@@ -183,6 +191,7 @@ def main_schedule():
             if len(current_schedule_data) > 0:
                 sg.theme('LightGrey1')
                 sg.popup('Grafik na ten miesiąc już był ustalany!')
+                continue
             days = []
             for key in keys.values():
                 days.append([values[key+shift_list[0]+'-main'], values[key+shift_list[0]+'-support'],

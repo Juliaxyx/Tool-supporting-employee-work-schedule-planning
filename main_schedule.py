@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import controllers.schedule_controller as controller
 import logic.logic_schedule as logic
-from consts import keys, shift_names, months, employees
+from consts import keys, shift_names, months, employees, shorter_months
 
 def main_schedule():
 
@@ -34,20 +34,24 @@ def main_schedule():
         if row == 4:
             return days[21:28]
         if row == 5:
-            for employee in employees:
-                days.append(sg.Frame('', layout=[
-                    [sg.Text(employee.capitalize(), size=(14,1), justification='center')],
-                    [sg.Text('Min: '), sg.Text('', key=employee+'-MIN_H')],
-                    [sg.Text('Max: '), sg.Text('', key=employee+'-MAX_H')],
-                    [sg.Text('Aktualne: '), sg.Text('', key=employee+'-CURRENT_H')],
-                    ], key=employee, pad=(0,12)))
             return days[28:]
+    def employee_tiles(): 
+        employee_tiles = []
+        for employee in employees:
+            employee_tiles.append(sg.Frame('', layout=[
+                [sg.Text(employee.capitalize(), size=(14,1), justification='center')],
+                [sg.Text('Min: '), sg.Text('', key=employee+'-MIN_H')],
+                [sg.Text('Max: '), sg.Text('', key=employee+'-MAX_H')],
+                [sg.Text('Aktualne: '), sg.Text('', key=employee+'-CURRENT_H')],
+                ], key=employee, pad=(0,0)))
+        return employee_tiles
     layout = [
         [show_days(1)],
         [show_days(2)],
         [show_days(3)],
         [show_days(4)],
-        [show_days(5)],
+        [show_days(5),
+         employee_tiles()],
         [sg.Push(), sg.Text('Wybierz miesiąc:'), sg.Combo(months, key='-MONTH-', readonly=True, enable_events=True)],
         [sg.Button('Zapisz zmiany', disabled=True), sg.Button('Edytuj zmiany', disabled=True), sg.Button('Wyjście')]
     ]
@@ -71,6 +75,15 @@ def main_schedule():
             set_default = True
         event,values= window_form.read()
         if event == '-MONTH-':
+            if months.index(values['-MONTH-']) in shorter_months:
+                window_form['-31-'].update(visible=False)
+                if months.index(values['-MONTH-']) == shorter_months[0]:
+                    window_form['-30-'].update(visible=False)
+                else:
+                    window_form['-30-'].update(visible=True)
+            else:
+                window_form['-30-'].update(visible=True)
+                window_form['-31-'].update(visible=True)
             current_schedule_data = controller.retrieve_info_schedule(months.index(values['-MONTH-']))
             form_data = controller.retrieve_info_form(months.index(values['-MONTH-']))
             employee_hours = {employee: 0 for employee in employees}
@@ -128,13 +141,11 @@ def main_schedule():
                             employees_all_shifts[keys[int(day)]+shift_list[1]+'-support'].append(employee)
                         else:
                             continue
-                print(employees_all_shifts)
             if len(form_data) < 1:
                 sg.theme('LightGrey1')
                 sg.popup('Brak wystawionej dyspozycyjności w tym miesiącu!')
                 continue
             if len(current_schedule_data) > 0:    
-                print(current_schedule_data)
                 for shift_row in current_schedule_data:
                     if shift_row[0] != '':
                         employee_hours[shift_row[0]] += 5
@@ -142,16 +153,16 @@ def main_schedule():
                         window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-main'].update(value=shift_row[0], size=(10,1))
                         window_form[shift_row[0]+'-CURRENT_H'].update(value=employee_hours[shift_row[0]])  
                         combo_new_values = employees_all_shifts[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].copy()
-                        if shift_row[1] != '':
-                            employee_hours[shift_row[1]] += 5
-                            employees_chosen[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'] = shift_row[1]
-                            window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].update(value=shift_row[1], size=(10,len(combo_new_values)))                              
-                            window_form[shift_row[1]+'-CURRENT_H'].update(value=employee_hours[shift_row[1]])
                         try:
                             combo_new_values.remove(shift_row[0])
                         except:
                             print(combo_new_values)
                         window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].update(values=combo_new_values, size=(10,len(combo_new_values)))
+                        if shift_row[1] != '':
+                            employee_hours[shift_row[1]] += 5
+                            employees_chosen[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'] = shift_row[1]
+                            window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].update(value=shift_row[1], values=combo_new_values, size=(10,len(combo_new_values)))
+                            window_form[shift_row[1]+'-CURRENT_H'].update(value=employee_hours[shift_row[1]])
                         if is_coordinator:
                             window_form[keys[int(shift_row[2][0:shift_row[2].find('/')])]+shift_list[shift_row[3]-1]+'-support'].update(disabled=False)
         if event.find('-main') != -1 or event.find('-support') != -1:
@@ -197,12 +208,18 @@ def main_schedule():
                 days.append([values[key+shift_list[0]+'-main'], values[key+shift_list[0]+'-support'],
                     values[key+shift_list[1]+'-main'], values[key+shift_list[1]+'-support']])
             controller.insert_info(days, months.index(values['-MONTH-']))
+            current_schedule_data = controller.retrieve_info_schedule(months.index(values['-MONTH-']))
+            sg.theme('LightGrey1')
+            sg.popup('Grafik został zapisany!')
         if event == 'Edytuj zmiany':
             days = []
             for key in keys.values():
                 days.append([values[key+shift_list[0]+'-main'], values[key+shift_list[0]+'-support'],
                     values[key+shift_list[1]+'-main'], values[key+shift_list[1]+'-support']])
             controller.update_info(days, months.index(values['-MONTH-']))
+            current_schedule_data = controller.retrieve_info_schedule(months.index(values['-MONTH-']))
+            sg.theme('LightGrey1')
+            sg.popup('Grafik został edytowany!')
         if event in (sg.WIN_CLOSED, 'Wyjście'):
             sg.theme('DarkBlue3')
             break

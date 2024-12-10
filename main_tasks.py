@@ -58,7 +58,6 @@ def main_tasks():
             while True:
                 sg.theme('LightGrey1')
                 chosen_date = sg.popup_get_date()
-                print(chosen_date)
                 if chosen_date == None:
                     break
                 else:
